@@ -214,7 +214,7 @@ installed with:
 
 Create a `git` user for Gitlab:
 
-    adduser --system --shell /sbin/nologin --comment 'GitLab' --create-home --home-dir /home/git/ git
+    adduser --system --shell /sbin/nologin --comment 'GitLab' --create-home --home-dir /opt/gitlabhq/ git
 
 For extra security, the shell we use for this user does not allow logins via a terminal.
 
@@ -240,7 +240,7 @@ GitLab Shell is a ssh access and repository management application developed spe
 
 
     # Go to home directory
-    cd /home/git
+    cd /opt/gitlabhq/
 
     # Clone gitlab shell
     sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-shell.git -b v1.8.0
@@ -333,7 +333,7 @@ Test the connection as the gitlab (uid=git) user.
 ## 6. GitLab
 
     # We'll install GitLab into home directory of the user "git"
-    cd /home/git
+    cd /opt/gitlabhq/
 
 ### Clone the Source
 
@@ -344,7 +344,7 @@ Test the connection as the gitlab (uid=git) user.
 
 ### Configure it
 
-    cd /home/git/gitlab
+    cd /opt/gitlabhq/gitlab
 
     # Copy the example GitLab config
     sudo -u git -H cp config/gitlab.yml.example config/gitlab.yml
@@ -362,7 +362,7 @@ Test the connection as the gitlab (uid=git) user.
     sudo chmod -R u+rwX  tmp/
 
     # Create directory for satellites
-    sudo -u git -H mkdir /home/git/gitlab-satellites
+    sudo -u git -H mkdir /opt/gitlabhq/gitlab-satellites
 
     # Create directories for sockets/pids and make sure GitLab can write to them
     sudo -u git -H mkdir tmp/pids/
@@ -415,7 +415,7 @@ Make sure to edit both `gitlab.yml` and `unicorn.rb` to match your setup.
 
 ### Install Gems
 
-    cd /home/git/gitlab
+    cd /opt/gitlabhq/gitlab
 
     # For MySQL (note, the option says "without ... postgres")
     sudo -u git -H /usr/local/bin/bundle install --deployment --without development test postgres aws
@@ -483,7 +483,7 @@ Edit `/etc/nginx/conf.d/gitlab` and replace `git.example.com` with your FQDN. Ma
 Add `nginx` user to `git` group:
 
     usermod -a -G git nginx
-    chmod g+rx /home/git/
+    chmod g+rx /opt/gitlabhq/
 
 Finally start nginx with:
 
@@ -541,7 +541,7 @@ Restart the service for the changes to take effect:
 
 To make sure you didn't miss anything run a more thorough check with:
 
-    cd /home/git/gitlab
+    cd /opt/gitlabhq/gitlab
     sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production
 
 Now, the output will complain that your init script is not up-to-date as follows:
