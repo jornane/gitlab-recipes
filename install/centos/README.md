@@ -451,8 +451,7 @@ When done you see 'Administrator account created:'
 
 Download the init script (will be /etc/init.d/gitlab):
 
-    wget -O /etc/init.d/gitlab https://gitlab.com/gitlab-org/gitlab-recipes/raw/master/init/sysvinit/centos/gitlab-unicorn
-    sed -i 's|APP_PATH=/home/$USER/gitlab|APP_PATH=/opt/gitlabhq/gitlab|' /etc/init.d/gitlab
+    curl -sSL https://gitlab.com/gitlab-org/gitlab-recipes/raw/master/init/sysvinit/centos/gitlab-unicorn | sed 's|APP_PATH=/home/$USER/gitlab|APP_PATH=/opt/gitlabhq/gitlab|' > /etc/init.d/gitlab
     chmod +x /etc/init.d/gitlab
     chkconfig --add gitlab
 
