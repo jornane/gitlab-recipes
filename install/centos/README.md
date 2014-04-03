@@ -423,20 +423,20 @@ Make sure to edit both `gitlab.yml` and `unicorn.rb` to match your setup.
 
     # For MySQL (note, the option says "without ... postgres")
     su - git
-    cd gitlab
+    cd /opt/gitlabhq/gitlab
     bundle install --deployment --without development test postgres aws
     exit
 
     # Or for PostgreSQL (note, the option says "without ... mysql")
     su - git
-    cd gitlab
+    cd /opt/gitlabhq/gitlab
     bundle install --deployment --without development test mysql aws
     exit
 
 ### Initialize Database and Activate Advanced Features
 
     su - git
-    cd gitlab
+    cd /opt/gitlabhq/gitlab
     bundle exec rake gitlab:setup RAILS_ENV=production
     exit
 
@@ -469,7 +469,7 @@ Make GitLab start on boot:
 Check if GitLab and its environment are configured correctly:
 
     su - git
-    cd gitlab
+    cd /opt/gitlabhq/gitlab
     bundle exec rake gitlab:env:info RAILS_ENV=production
     exit
 
