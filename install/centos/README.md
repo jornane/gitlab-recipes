@@ -275,17 +275,17 @@ Create a new user and database for GitLab:
     CREATE USER 'git'@'localhost' IDENTIFIED BY 'supersecret';
 
     # Create the GitLab production database
-    CREATE DATABASE IF NOT EXISTS `gitlabhq_production` DEFAULT CHARACTER SET `utf8` COLLATE `utf8_unicode_ci`;
+    CREATE DATABASE IF NOT EXISTS `git` DEFAULT CHARACTER SET `utf8` COLLATE `utf8_unicode_ci`;
 
     # Grant the GitLab user necessary permissions on the table.
-    GRANT SELECT, LOCK TABLES, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER ON `gitlabhq_production`.* TO 'git'@'localhost';
+    GRANT SELECT, LOCK TABLES, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER ON `git`.* TO 'git'@'localhost';
 
     # Quit the database session
     \q
 
 Try connecting to the new database with the new user:
 
-    mysql -u git -p -D gitlabhq_production
+    mysql -u git -p -D git
     # Type the password you replaced supersecret with earlier
     # Quit the database session
     \q
