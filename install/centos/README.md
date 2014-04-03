@@ -10,6 +10,8 @@ Additional Notes  : In order to get a proper Ruby setup we build it from source
 
 ## Overview
 
+**This is a fork. You can find the original version of this document [here](https://github.com/gitlabhq/gitlab-recipes/tree/master/install/centos).** *This version is changed to use more sensible paths instead of just putting everything under /home. Additionally, RVM will do the Ruby compiling for us.*
+
 Please read [requirements.md](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/install/requirements.md) for hardware and platform requirements.
 
 ### Important Notes
