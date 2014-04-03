@@ -217,63 +217,27 @@ You might have to run `source ~/.bash_profile` for the `$PATH` to take effect.
 
 ----------
 
-## 2. Ruby
-
-The use of ruby version managers such as [RVM](http://rvm.io/), [rbenv](https://github.com/sstephenson/rbenv) or [chruby](https://github.com/postmodern/chruby) with GitLab in production frequently leads to hard to diagnose problems. Version managers are not supported and we stronly advise everyone to follow the instructions below to use a system ruby.
-
-Remove the old Ruby 1.8 package if present. Gitlab 6.7 only supports the Ruby 2.0.x release series:
-
-    yum remove ruby
-
-Remove any other Ruby build if it is still present:
-
-    cd <your-ruby-source-path>
-    make uninstall
-
-Download Ruby and compile it:
-
-    mkdir /tmp/ruby && cd /tmp/ruby
-    curl --progress ftp://ftp.ruby-lang.org/pub/ruby/2.0/ruby-2.0.0-p451.tar.gz | tar xz
-    cd ruby-2.0.0-p451
-    ./configure --disable-install-rdoc
-    make
-    make prefix=/usr/local install
-
-Install the Bundler Gem:
-
-    gem install bundler --no-ri --no-rdoc
-
-Logout and login again for the `$PATH` to take effect. Check that ruby is properly
-installed with:
-
-    which ruby
-    # /usr/local/bin/ruby
-    ruby -v
-    # ruby 2.0.0p451 (2014-02-24 revision 45167) [x86_64-linux]
-
-----------
-
-## 3. System Users
+## 2. System Users
 
 Create a `git` user for Gitlab:
 
-    adduser --system --shell /sbin/nologin --comment 'GitLab' --create-home --home-dir /opt/gitlabhq/ git
+    adduser --system --shell /bin/bash --comment 'GitLab' --create-home --home-dir /var/lib/gitlab/ git
 
-For extra security, the shell we use for this user does not allow logins via a terminal.
+We give the user a shell, so he can run RVM.
 
-**Important:** In order to include `/usr/local/bin` to git user's PATH, one way is to edit the sudoers file. As root run:
+----------
 
-    visudo
+## 3. Ruby
 
-Then search for this line:
+We use RVM for installing Ruby on Rails and keeping it up to date.
 
-    Defaults    secure_path = /sbin:/bin:/usr/sbin:/usr/bin
+Remove the old Ruby 1.8 if present:
 
-and append `/usr/local/bin` like so:
+    yum remove ruby
 
-    Defaults    secure_path = /sbin:/bin:/usr/sbin:/usr/bin:/usr/local/bin
+Install RVM
 
-Save and exit.
+    curl -sSL https://get.rvm.io | sudo -u git -H bash -l -s stable --ruby --rails
 
 ----------
 
@@ -282,7 +246,9 @@ Save and exit.
 GitLab Shell is a ssh access and repository management application developed specifically for GitLab.
 
 
-    # Go to home directory
+    # Go to installation directory
+    mkdir /opt/gitlabhq/
+    chown git:git /opt/gitlabhq
     cd /opt/gitlabhq/
 
     # Clone gitlab shell
@@ -401,13 +367,14 @@ Your password has been accepted successfully and you can type \q to quit.
     cd /opt/gitlabhq/gitlab
 
     # Copy the example GitLab config
-    sudo -u git -H cp config/gitlab.yml.example config/gitlab.yml
+    sudo -u git -H cp config/gitlab.yml{.example,}
 
     # Make sure to change "localhost" to the fully-qualified domain name of your
     # host serving GitLab where necessary
     #
     # If you installed Git from source, change the git bin_path to /usr/local/bin/git
     sudo -u git -H editor config/gitlab.yml
+    sed -i 's_/home/git_/opt/gitlabhq_' config/gitlab.yml
 
     # Make sure GitLab can write to the log/ and tmp/ directories
     sudo chown -R git log/
@@ -416,7 +383,8 @@ Your password has been accepted successfully and you can type \q to quit.
     sudo chmod -R u+rwX  tmp/
 
     # Create directory for satellites
-    sudo -u git -H mkdir /opt/gitlabhq/gitlab-satellites
+    mkdir -p /var/lib/gitlab/gitlab-satellites
+    chown -R git:git /var/lib/gitlab/gitlab-satellites
 
     # Create directories for sockets/pids and make sure GitLab can write to them
     sudo -u git -H mkdir tmp/pids/
@@ -425,11 +393,14 @@ Your password has been accepted successfully and you can type \q to quit.
     sudo chmod -R u+rwX  tmp/sockets/
 
     # Create public/uploads directory otherwise backup will fail
-    sudo -u git -H mkdir public/uploads
-    sudo chmod -R u+rwX  public/uploads
+    mkdir -p /var/lib/gitlab/uploads
+    chown -R git:git /var/lib/gitlab/uploads
+    sudo -u git ln -s /var/lib/gitlab/uploads public/uploads
+    sudo chmod -R u+rwX /var/lib/gitlab/uploads
 
     # Copy the example Unicorn config
     sudo -u git -H cp config/unicorn.rb.example config/unicorn.rb
+    sed -i 's_/home/git_/opt/gitlabhq_' config/gitlab.yml
 
     # Enable cluster mode if you expect to have a high load instance
     # Ex. change amount of workers to 3 for 2GB RAM server
@@ -472,14 +443,23 @@ Make sure to edit both `gitlab.yml` and `unicorn.rb` to match your setup.
     cd /opt/gitlabhq/gitlab
 
     # For MySQL (note, the option says "without ... postgres")
-    sudo -u git -H /usr/local/bin/bundle install --deployment --without development test postgres aws
+    su - git
+    cd gitlab
+    bundle install --deployment --without development test postgres aws
+    exit
 
     # Or for PostgreSQL (note, the option says "without ... mysql")
-    sudo -u git -H bundle install --deployment --without development test mysql aws
+    su - git
+    cd gitlab
+    bundle install --deployment --without development test mysql aws
+    exit
 
 ### Initialize Database and Activate Advanced Features
 
-    sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production
+    su - git
+    cd gitlab
+    bundle exec rake gitlab:setup RAILS_ENV=production
+    exit
 
     # Type 'yes' to create the database tables.
 
@@ -493,6 +473,7 @@ When done you see 'Administrator account created:'
 Download the init script (will be /etc/init.d/gitlab):
 
     wget -O /etc/init.d/gitlab https://gitlab.com/gitlab-org/gitlab-recipes/raw/master/init/sysvinit/centos/gitlab-unicorn
+    sed -i 's|APP_PATH=/home/$USER/gitlab|APP_PATH=/opt/gitlabhq/gitlab|' /etc/init.d/gitlab
     chmod +x /etc/init.d/gitlab
     chkconfig --add gitlab
 
@@ -502,13 +483,16 @@ Make GitLab start on boot:
 
 ### Set up logrotate
 
-    cp lib/support/logrotate/gitlab /etc/logrotate.d/gitlab
+    sed 's_/home/git_/opt/gitlabhq_' lib/support/logrotate/gitlab > /etc/logrotate.d/gitlab
 
 ### Check Application Status
 
 Check if GitLab and its environment are configured correctly:
 
-    sudo -u git -H bundle exec rake gitlab:env:info RAILS_ENV=production
+    su - git
+    cd gitlab
+    bundle exec rake gitlab:env:info RAILS_ENV=production
+    exit
 
 ### Start your GitLab instance:
 
@@ -516,7 +500,10 @@ Check if GitLab and its environment are configured correctly:
 
 ### Compile assets
 
-    sudo -u git -H bundle exec rake assets:precompile RAILS_ENV=production
+    su - git
+    cd gitlab
+    bundle exec rake assets:precompile RAILS_ENV=production
+    exit
 
 ## 7. Configure the web server
 
@@ -530,9 +517,9 @@ To do so, follow the instructions provided by the [nginx wiki][nginx-centos] and
     yum update
     yum -y install nginx
     chkconfig nginx on
-    wget -O /etc/nginx/conf.d/gitlab.conf https://gitlab.com/gitlab-org/gitlab-recipes/raw/master/web-server/nginx/gitlab-ssl
+    curl https://gitlab.com/gitlab-org/gitlab-recipes/raw/master/web-server/nginx/gitlab-ssl | sed 's_/home/git_/opt/gitlabhq_' > /etc/nginx/conf.d/gitlab.conf
 
-Edit `/etc/nginx/conf.d/gitlab` and replace `git.example.com` with your FQDN. Make sure to read the comments in order to properly set up ssl.
+Edit `/etc/nginx/conf.d/gitlab.conf` and replace `git.example.com` with your FQDN. Make sure to read the comments in order to properly set up ssl.
 
 Add `nginx` user to `git` group:
 
@@ -550,7 +537,7 @@ installing apache and `mod_ssl` which will provide ssl support:
 
     yum -y install httpd mod_ssl
     chkconfig httpd on
-    wget -O /etc/httpd/conf.d/gitlab.conf https://gitlab.com/gitlab-org/gitlab-recipes/raw/master/web-server/apache/gitlab-ssl.conf
+    curl https://gitlab.com/gitlab-org/gitlab-recipes/raw/master/web-server/apache/gitlab-ssl.conf | sed 's_/home/git_/opt/gitlabhq_' > /etc/httpd/conf.d/gitlab.conf
     mv /etc/httpd/conf.d/ssl.conf{,.bak}
     mkdir /var/log/httpd/logs/
 
