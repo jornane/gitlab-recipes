@@ -357,22 +357,20 @@ Your password has been accepted successfully and you can type \q to quit.
     # host serving GitLab where necessary
     #
     # If you installed Git from source, change the git bin_path to /usr/local/bin/git
-    sudo -u git -H editor config/gitlab.yml
-    sed -i 's_/home/git_/opt/gitlabhq_' config/gitlab.yml
+    editor config/gitlab.yml
 
     # Make sure GitLab can write to the log/ and tmp/ directories
-    sudo chown -R git log/ tmp/
-    sudo chmod -R u+rwX  log/  tmp/
+    chown -R git log/ tmp/
+    chmod -R u+rwX  log/  tmp/
 
     # Create directory for satellites
     mkdir -p /var/lib/gitlab/gitlab-satellites
     chown -R git:git /var/lib/gitlab/gitlab-satellites
 
     # Create directories for sockets/pids and make sure GitLab can write to them
-    sudo -u git -H mkdir tmp/pids/
-    sudo -u git -H mkdir tmp/sockets/
-    sudo chmod -R u+rwX  tmp/pids/
-    sudo chmod -R u+rwX  tmp/sockets/
+    sudo -u git -H mkdir tmp/pids/ tmp/sockets/
+    chmod -R u+rwX  tmp/pids/
+    chmod -R u+rwX  tmp/sockets/
 
     # Create public/uploads directory otherwise backup will fail
     mkdir -p /var/lib/gitlab/uploads
@@ -382,11 +380,10 @@ Your password has been accepted successfully and you can type \q to quit.
 
     # Copy the example Unicorn config
     sudo -u git -H cp config/unicorn.rb.example config/unicorn.rb
-    sed -i 's_/home/git_/opt/gitlabhq_' config/gitlab.yml
 
     # Enable cluster mode if you expect to have a high load instance
     # Ex. change amount of workers to 3 for 2GB RAM server
-    sudo -u git -H editor config/unicorn.rb
+    editor config/unicorn.rb
 
     # Copy the example Rack attack config
     sudo -u git -H cp config/initializers/rack_attack.rb.example config/initializers/rack_attack.rb
@@ -410,7 +407,7 @@ Make sure to edit both `gitlab.yml` and `unicorn.rb` to match your setup.
     # If you followed the database guide then please do as follows:
     # Change 'secure password' with the value you have given to $password
     # You can keep the double quotes around the password
-    sudo -u git -H editor config/database.yml
+    editor config/database.yml
 
     or
 
