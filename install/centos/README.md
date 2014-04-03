@@ -243,8 +243,12 @@ GitLab Shell is a ssh access and repository management application developed spe
     # Update repos_path and auth_file
     sudo -u git -H editor config.yml
 
+    # Make location for storing repositories
+    mkdir /srv/local/git
+    chown git:git /srv/local/git
+
     # Do setup
-    sudo -u git -H /usr/local/bin/ruby ./bin/install
+    sudo -u git -H ~git/.rvm/rubies/ruby-2.1.1/bin/ruby ./bin/install
 
 ----------
 
