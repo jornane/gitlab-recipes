@@ -210,6 +210,9 @@ Remove the old Ruby 1.8 if present:
 Install RVM
 
     curl -sSL https://get.rvm.io | sudo -u git -H bash -l -s stable --ruby --rails
+    curl -sSL https://get.rvm.io | sudo -u git -H bash -l -s stable --ruby --rails
+
+(yep, you must run it twice.)
 
 ----------
 
