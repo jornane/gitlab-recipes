@@ -364,8 +364,8 @@ Your password has been accepted successfully and you can type \q to quit.
     chmod -R u+rwX  log/  tmp/
 
     # Create directory for satellites
-    mkdir -p /var/lib/gitlab/gitlab-satellites
-    chown -R git:git /var/lib/gitlab/gitlab-satellites
+    mkdir -p /var/lib/gitlab/satellites
+    chown -R git:git /var/lib/gitlab/satellites
 
     # Create directories for sockets/pids and make sure GitLab can write to them
     sudo -u git -H mkdir tmp/pids/ tmp/sockets/
