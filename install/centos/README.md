@@ -211,6 +211,8 @@ Remove the old Ruby 1.8 if present:
 
 Install RVM
 
+    echo 'gem: --no-ri --no-rdoc' > ~git/.gemrc
+    chown git:git ~git/.gemrc
     curl -sSL https://get.rvm.io | sudo -u git -H bash -l -s stable --ruby --rails
     curl -sSL https://get.rvm.io | sudo -u git -H bash -l -s stable --ruby --rails
 
