@@ -328,7 +328,7 @@ Your password has been accepted successfully and you can type \q to quit.
 ----------
 ## 6. GitLab
 
-    # We'll install GitLab into home directory of the user "git"
+    # We'll install GitLab into /opt/gitlabhq
     cd /opt/gitlabhq/
 
 ### Clone the Source
