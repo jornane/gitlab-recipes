@@ -361,10 +361,8 @@ Your password has been accepted successfully and you can type \q to quit.
     sed -i 's_/home/git_/opt/gitlabhq_' config/gitlab.yml
 
     # Make sure GitLab can write to the log/ and tmp/ directories
-    sudo chown -R git log/
-    sudo chown -R git tmp/
-    sudo chmod -R u+rwX  log/
-    sudo chmod -R u+rwX  tmp/
+    sudo chown -R git log/ tmp/
+    sudo chmod -R u+rwX  log/  tmp/
 
     # Create directory for satellites
     mkdir -p /var/lib/gitlab/gitlab-satellites
