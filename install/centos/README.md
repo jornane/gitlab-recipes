@@ -235,13 +235,13 @@ GitLab Shell is a ssh access and repository management application developed spe
 
     cd gitlab-shell
 
-    sudo -u git -H cp config.yml.example config.yml
+    sudo -u git -H cp config.yml{.example,}
 
     # Edit config and replace gitlab_url
     # with something like 'https://domain.com/'
     # also edit self_signed_cert to true if you are going to use selfsigned cert 
     # Update repos_path and auth_file
-    sudo -u git -H editor config.yml
+    editor config.yml
 
     # Make location for storing repositories
     mkdir /srv/local/git
@@ -379,14 +379,14 @@ Your password has been accepted successfully and you can type \q to quit.
     sudo chmod -R u+rwX /var/lib/gitlab/uploads
 
     # Copy the example Unicorn config
-    sudo -u git -H cp config/unicorn.rb.example config/unicorn.rb
+    sudo -u git -H cp config/unicorn.rb{.example,}
 
     # Enable cluster mode if you expect to have a high load instance
     # Ex. change amount of workers to 3 for 2GB RAM server
     editor config/unicorn.rb
 
     # Copy the example Rack attack config
-    sudo -u git -H cp config/initializers/rack_attack.rb.example config/initializers/rack_attack.rb
+    sudo -u git -H cp config/initializers/rack_attack.rb{.example,}
 
     # Configure Git global settings for git user, useful when editing via web
     # Edit user.email according to what is set in config/gitlab.yml
