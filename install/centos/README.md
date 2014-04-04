@@ -215,6 +215,7 @@ Install RVM
     chown git:git ~git/.gemrc
     curl -sSL https://get.rvm.io | sudo -u git -H bash -l -s stable --ruby --rails
     curl -sSL https://get.rvm.io | sudo -u git -H bash -l -s stable --ruby --rails
+    ln -s ~git/.rvm/rubies/ruby-2.1.1/bin/ruby /usr/local/bin/ruby
 
 (yep, you must run it twice.)
 
@@ -248,7 +249,7 @@ GitLab Shell is a ssh access and repository management application developed spe
     chown git:git /srv/local/git
 
     # Do setup
-    sudo -u git -H ~git/.rvm/rubies/ruby-2.1.1/bin/ruby ./bin/install
+    sudo -Hu git ruby ./bin/install
 
 ----------
 
