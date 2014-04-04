@@ -361,7 +361,12 @@ Your password has been accepted successfully and you can type \q to quit.
 
     # Make sure GitLab can write to the log/ and tmp/ directories
     chown -R git log/ tmp/
-    chmod -R u+rwX  log/  tmp/
+    chmod -R u+rwX log/ tmp/
+    mv tmp/* /var/lib/gitlab/
+    rm -rf tmp
+    ln -s /var/lib/gitlab/ tmp
+    mv log /var/log/gitlab
+    ln -s /var/log/gitlab/ log
 
     # Create directory for satellites
     mkdir -p /var/lib/gitlab/satellites
