@@ -250,7 +250,7 @@ GitLab Shell is a ssh access and repository management application developed spe
     chown git:git /srv/local/git
 
     # Do setup
-    sudo -Hu git ruby ./bin/install
+    sudo -Hu git "$(which ruby)" ./bin/install
 
 ----------
 
