@@ -215,9 +215,10 @@ Install RVM
     chown git:git ~git/.gemrc
     curl -sSL https://get.rvm.io | sudo -u git -H bash -l -s stable --ruby --rails
     curl -sSL https://get.rvm.io | sudo -u git -H bash -l -s stable --ruby --rails
+    curl -sSL https://get.rvm.io | sudo -u git -H bash -l -s stable --ruby --rails
     ln -s ~git/.rvm/rubies/ruby-2.1.1/bin/ruby /usr/local/bin/ruby
 
-(yep, you must run it twice.)
+(yep, you must run it thrice.)
 
 ----------
 
