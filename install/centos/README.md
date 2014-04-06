@@ -490,15 +490,16 @@ Check if GitLab and its environment are configured correctly:
     exit
 
 ### Configure SElinux
-semanage -i - <<EOF
-fcontext -a -t var_lib_t '/var/lib/gitlab(/.*)?'
-fcontext -a -t ssh_home_t '/var/lib/gitlab/.ssh(/.*)?'
-fcontext -a -t lib_t '/opt/gitlabhq(/.*)?'
-fcontext -a -t httpd_sys_content_t '/opt/gitlabhq/gitlab/public(/.*)?'
-fcontext -a -t httpd_sys_content_t '/srv/local/git(/.*)?'
-EOF
-restorecon -Rv /var/lib/gitlab
-restorecon -Rv /opt/gitlabhq
+
+    semanage -i - <<EOF
+    fcontext -a -t var_lib_t '/var/lib/gitlab(/.*)?'
+    fcontext -a -t ssh_home_t '/var/lib/gitlab/.ssh(/.*)?'
+    fcontext -a -t lib_t '/opt/gitlabhq(/.*)?'
+    fcontext -a -t httpd_sys_content_t '/opt/gitlabhq/gitlab/public(/.*)?'
+    fcontext -a -t httpd_sys_content_t '/srv/local/git(/.*)?'
+    EOF
+    restorecon -Rv /var/lib/gitlab
+    restorecon -Rv /opt/gitlabhq
 
 
 ## 7. Configure the web server
